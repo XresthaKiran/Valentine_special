@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no">
+    <title>💕 Our Memories - Gibi 💕</title>
+    <style>
+        @font-face {
+            font-family: 'Roberts Script';
+            src: url('./fonts/DEMO-robertsscript-regular.otf') format('opentype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            font-family: 'Roberts Script', sans-serif;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Floating Hearts Background */
+        .hearts-container {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-item {
+            position: absolute;
+            font-size: 20px;
+            animation: float-up 12s infinite ease-in;
+            opacity: 0.6;
+        }
+
+        @keyframes float-up {
+            0% {
+                bottom: -100px;
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                bottom: 100vh;
+                opacity: 0;
+                transform: translateX(100px);
+            }
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Navigation */
+        .nav-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            padding: 10px 20px;
+            background: rgba(255, 105, 180, 0.2);
+            border: 1px solid rgba(255, 105, 180, 0.5);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 105, 180, 0.4);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.6);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 105, 180, 0.5);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.8);
+        }
+
+        /* Main Content */
+        .main-content {
+            position: relative;
+            z-index: 5;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: clamp(2rem, 6vw, 3rem);
+            color: #ffffff;
+            margin-bottom: 40px;
+            text-shadow: 
+                0 0 20px rgba(255,105,180,0.8),
+                0 0 40px rgba(255,105,180,0.5);
+            line-height: 1.3;
+            letter-spacing: 0.05em;
+        }
+
+        .subtitle-text {
+            text-align: center;
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: #b8b8d1;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background: rgba(168, 85, 247, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 105, 180, 0.3);
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-grid.has-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            align-items: start;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            aspect-ratio: 1;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.5);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: flex-end;
+            padding: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-caption {
+            color: #ffffff;
+            font-size: 0.9rem;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        }
+
+        .empty-gallery {
+            text-align: center;
+            color: #b8b8d1;
+            font-size: 1.2rem;
+        }
+
+        .empty-gallery p {
+            margin-bottom: 20px;
+        }
+
+        .upload-hint {
+            color: #a855f7;
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+
+        /* Lightbox Modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 15px;
+        }
+
+        .lightbox-caption {
+            color: #ffffff;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #ffffff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 101;
+            pointer-events: all;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255, 105, 180, 0.8);
+            transform: scale(1.1);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 20px;
+            pointer-events: none;
+            z-index: 102;
+        }
+
+        .lightbox-prev, .lightbox-next {
+            color: #ffffff;
+            font-size: 36px;
+            font-weight: bold;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            pointer-events: all;
+            user-select: none;
+            z-index: 102;
+        }
+
+        .lightbox-prev:hover, .lightbox-next:hover {
+            background: rgba(255, 105, 180, 0.8);
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        .footer {
+            position: relative;
+            z-index: 5;
+            text-align: center;
+            margin-top: 50px;
+            color: #b8b8d1;
+            font-size: 0.9rem;
+        }
+
+        .footer-heart {
+            color: #ff69b4;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+        }
+
+        /* Music Button + Visualizer */
+        .music-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff69b4, #a855f7);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            font-size: 22px;
+            z-index: 9999;
+            box-shadow: 0 5px 25px rgba(255,105,180,0.5);
+            transition: all 0.3s ease;
+            animation: pulse-music 2s ease-in-out infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .music-btn:hover { transform: scale(1.15); box-shadow: 0 8px 35px rgba(255,105,180,0.7); }
+        .music-btn.playing { animation: none; background: linear-gradient(135deg, #a855f7, #667eea); }
+        .music-btn.playing::after { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px solid rgba(255,105,180,0.5); animation: music-wave 1.5s ease-out infinite; }
+
+        @keyframes pulse-music { 0%,100%{ box-shadow:0 5px 25px rgba(255,105,180,0.5);} 50%{ box-shadow:0 5px 25px rgba(255,105,180,0.8),0 0 0 12px rgba(255,105,180,0.15);} }
+        @keyframes music-wave { 0%{transform:scale(1);opacity:1;} 100%{transform:scale(1.8);opacity:0;} }
+
+        .music-btn.playing .music-bars { display: flex; }
+        .music-bars { display: none; gap: 2px; height: 20px; align-items: flex-end; }
+        .music-bar { width: 3px; background: white; border-radius: 2px; animation: bar-dance 0.5s ease-in-out infinite; }
+        .music-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .music-bar:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+        .music-bar:nth-child(3) { height: 12px; animation-delay: 0.2s; }
+        .music-bar:nth-child(4) { height: 18px; animation-delay: 0.3s; }
+
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .lightbox-prev, .lightbox-next {
+                width: 40px;
+                height: 40px;
+                font-size: 28px;
+            }
+
+            .lightbox-close {
+                width: 40px;
+                height: 40px;
+                font-size: 30px;
+            }
+        }
+        /* Confetti Canvas */
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="hearts-container" id="heartsContainer"></div>
+    <!-- Confetti Canvas (from celebration page) -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Navigation -->
+    <div class="nav-container">
+        <a href="index.html" class="nav-link">💕 The Question</a>
+        <a href="celebration.html" class="nav-link">🎉 Yes! Celebration</a>
+        <a href="gallery.html" class="nav-link active">📸 Our Memories</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1 class="page-title">📸 Our Beautiful Memories 💕</h1>
+        <p class="subtitle-text">Every moment with you is a precious memory to cherish forever...</p>
+
+        <!-- Main Gallery Section -->
+        <div style="margin-bottom: 60px;">
+            <h2 style="text-align: center; font-size: 1.8rem; color: #ffffff; margin-bottom: 30px; text-shadow: 0 0 15px rgba(255,105,180,0.6);">💕 All Moments</h2>
+            <div class="gallery-grid" id="galleryGrid">
+                <div class="empty-gallery">
+                    <p>✨ Loading memories... ✨</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Videos Section -->
+        <div>
+            <h2 style="text-align: center; font-size: 1.8rem; color: #ffffff; margin-bottom: 30px; text-shadow: 0 0 15px rgba(255,105,180,0.6);">🎥 Videos</h2>
+            <div class="gallery-grid" id="videosGrid">
+                <div class="empty-gallery">
+                    <p>✨ Add videos to memories/videos/ folder ✨</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <span class="lightbox-close" id="lightboxClose">&times;</span>
+            <div class="lightbox-nav">
+                <span class="lightbox-prev" id="lightboxPrev">&#10094;</span>
+                <span class="lightbox-next" id="lightboxNext">&#10095;</span>
+            </div>
+            <img src="" alt="" class="lightbox-image" id="lightboxImage" style="display: none;">
+            <video id="lightboxVideo" style="max-width: 100%; max-height: 80vh; border-radius: 15px; display: none; pointer-events: auto;" controls></video>
+            <div class="lightbox-caption" id="lightboxCaption"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Made with <span class="footer-heart">💖</span> for Gibi</p>
+    </div>
+
+    <!-- Background Music -->
+    <audio id="bgMusic" loop preload="metadata" crossorigin="anonymous">
+        <source src="./Cupid.mp3" type="audio/mpeg">
+        <source src="Cupid.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="musicToggle" class="music-btn">🎵</button>
+
+    <script>
+        // Create floating items
+        function createFloatingItems() {
+            const container = document.getElementById('heartsContainer');
+            const items = ['💕', '💖', '💗', '💓', '💝', '💘', '❤️', '🌸', '🌺', '✨', '💫', '🦋'];
+            
+            for (let i = 0; i < 25; i++) {
+                const item = document.createElement('div');
+                item.className = 'floating-item';
+                item.innerHTML = items[Math.floor(Math.random() * items.length)];
+                item.style.left = Math.random() * 100 + 'vw';
+                item.style.animationDuration = (Math.random() * 12 + 12) + 's';
+                item.style.animationDelay = Math.random() * 10 + 's';
+                item.style.fontSize = (Math.random() * 15 + 12) + 'px';
+                container.appendChild(item);
+            }
+        }
+
+        // Create twinkling particles
+        function createParticles() {
+            const container = document.getElementById('heartsContainer');
+            
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                particle.style.background = Math.random() > 0.5 ? '#ff69b4' : '#a855f7';
+                container.appendChild(particle);
+            }
+        }
+
+        // Gallery functionality
+        let galleryImages = [];
+        let videosImages = [];
+        let currentImageIndex = 0;
+        let currentGalleryType = 'gallery'; // Track which gallery is open
+
+        // Load gallery images from memories folder
+        async function loadGallery() {
+            try {
+                const response = await fetch('./memories/');
+                const html = await response.text();
+                
+                // Parse HTML to extract image files
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const links = doc.querySelectorAll('a');
+                
+                const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+                const images = [];
+                
+                links.forEach(link => {
+                    let href = link.getAttribute('href');
+                    if (href && !href.startsWith('?') && imageExtensions.some(ext => href.toLowerCase().endsWith(ext))) {
+                        // Extract just the filename
+                        const filename = href.split('/').pop();
+                        images.push({
+                            src: './memories/' + filename,
+                            caption: filename.replace(/\.[^.]+$/, '')
+                        });
+                    }
+                });
+                
+                galleryImages = images;
+                renderGallery();
+            } catch (error) {
+                console.log('Error loading main gallery.');
+                renderGallery();
+            }
+        }
+
+        // Load videos from memories/videos folder
+        async function loadVideos() {
+            try {
+                const response = await fetch('./memories/videos/');
+                const html = await response.text();
+                
+                // Parse HTML to extract video files
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const links = doc.querySelectorAll('a');
+                
+                const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv', '.flv', '.wmv'];
+                const videos = [];
+                
+                links.forEach(link => {
+                    let href = link.getAttribute('href');
+                    if (href && !href.startsWith('?') && videoExtensions.some(ext => href.toLowerCase().endsWith(ext))) {
+                        // Extract just the filename
+                        const filename = href.split('/').pop();
+                        videos.push({
+                            src: './memories/videos/' + filename,
+                            caption: filename.replace(/\.[^.]+$/, '')
+                        });
+                    }
+                });
+                
+                videosImages = videos;
+                renderVideos();
+            } catch (error) {
+                console.log('Error loading videos folder.');
+                renderVideos();
+            }
+        }
+
+        function renderGallery() {
+            const grid = document.getElementById('galleryGrid');
+            
+            if (galleryImages.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-gallery">
+                        <p>✨ No memories added yet ✨</p>
+                        <p class="upload-hint">Add your favorite photos to the <strong>memories/</strong> folder</p>
+                        <p style="color: #a855f7; font-size: 0.85rem; margin-top: 10px;">Supported formats: .jpg, .jpeg, .png, .gif, .webp</p>
+                    </div>
+                `;
+                grid.classList.remove('has-images');
+            } else {
+                grid.classList.add('has-images');
+                grid.innerHTML = galleryImages.map((img, index) => `
+                    <div class="gallery-item" onclick="openLightbox(${index}, 'gallery')">
+                        <img src="${img.src}" alt="${img.caption}">
+                        <div class="gallery-overlay">
+                            <div class="gallery-caption">${img.caption}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderVideos() {
+            const grid = document.getElementById('videosGrid');
+            
+            if (videosImages.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-gallery">
+                        <p>✨ No videos yet ✨</p>
+                        <p class="upload-hint">Add your favorite videos to the <strong>memories/videos/</strong> folder</p>
+                        <p style="color: #a855f7; font-size: 0.85rem; margin-top: 10px;">Supported formats: .mp4, .webm, .mov, .avi, .mkv, .flv, .wmv</p>
+                    </div>
+                `;
+                grid.classList.remove('has-images');
+            } else {
+                grid.classList.add('has-images');
+                grid.innerHTML = videosImages.map((video, index) => `
+                    <div class="gallery-item" onclick="openLightbox(${index}, 'videos')">
+                        <video src="${video.src}" style="width: 100%; height: 100%; object-fit: cover;"></video>
+                        <div class="gallery-overlay">
+                            <div class="gallery-caption">🎥 ${video.caption}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function openLightbox(index, galleryType = 'gallery') {
+            currentGalleryType = galleryType;
+            const images = galleryType === 'videos' ? videosImages : galleryImages;
+            
+            if (images.length === 0) return;
+            
+            currentImageIndex = index;
+            const lightbox = document.getElementById('lightbox');
+            const imageElement = document.getElementById('lightboxImage');
+            const videoElement = document.getElementById('lightboxVideo');
+            const caption = document.getElementById('lightboxCaption');
+            
+            if (galleryType === 'videos') {
+                // Show video, hide image
+                imageElement.style.display = 'none';
+                videoElement.style.display = 'block';
+                videoElement.src = images[index].src;
+            } else {
+                // Show image, hide video
+                imageElement.style.display = 'block';
+                videoElement.style.display = 'none';
+                imageElement.src = images[index].src;
+            }
+            
+            caption.textContent = images[index].caption;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        function nextImage() {
+            const images = currentGalleryType === 'videos' ? videosImages : galleryImages;
+            if (images.length === 0) return;
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            openLightbox(currentImageIndex, currentGalleryType);
+        }
+
+        function prevImage() {
+            const images = currentGalleryType === 'videos' ? videosImages : galleryImages;
+            if (images.length === 0) return;
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            openLightbox(currentImageIndex, currentGalleryType);
+        }
+
+        // Event listeners
+        document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+        document.getElementById('lightboxNext').addEventListener('click', nextImage);
+        document.getElementById('lightboxPrev').addEventListener('click', prevImage);
+
+        document.getElementById('lightbox').addEventListener('click', (e) => {
+            if (e.target.id === 'lightbox') closeLightbox();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!document.getElementById('lightbox').classList.contains('active')) return;
+            if (e.key === 'ArrowRight') nextImage();
+            if (e.key === 'ArrowLeft') prevImage();
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            createFloatingItems();
+            createParticles();
+            loadGallery();
+            loadVideos();
+        });
+        // ========== MUSIC CONTROLLER ==========
+        const music = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicToggle');
+        let isMusicPlaying = false;
+        let hasMusicInteracted = false;
+
+        // Music settings
+        music.volume = 0.4;
+        const startTime = 11; // Start from 10 seconds
+
+        // Create visualizer bars
+        const barsContainer = document.createElement('div');
+        barsContainer.className = 'music-bars';
+        for (let i = 0; i < 4; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'music-bar';
+            barsContainer.appendChild(bar);
+        }
+        musicBtn.innerHTML = '';
+        musicBtn.appendChild(document.createTextNode('🎵'));
+
+        // Function to start music
+        function startMusic() {
+            music.currentTime = startTime;
+            music.play().then(() => {
+                isMusicPlaying = true;
+                hasMusicInteracted = true;
+                updateMusicButton();
+            }).catch(err => {
+                console.log('Music play failed:', err);
+            });
+        }
+
+        // Function to update button appearance
+        function updateMusicButton() {
+            if (isMusicPlaying) {
+                musicBtn.innerHTML = '';
+                musicBtn.appendChild(barsContainer.cloneNode(true));
+                musicBtn.classList.add('playing');
+            } else {
+                musicBtn.innerHTML = '🎵';
+                musicBtn.classList.remove('playing');
+            }
+        }
+
+        // Toggle music function
+        function toggleMusic(e) {
+            e.stopPropagation();
+
+            if (!hasMusicInteracted) {
+                startMusic();
+                return;
+            }
+
+            if (isMusicPlaying) {
+                music.pause();
+                isMusicPlaying = false;
+            } else {
+                music.currentTime = startTime;
+                music.play();
+                isMusicPlaying = true;
+            }
+            updateMusicButton();
+        }
+
+        // Button click handler
+        musicBtn.addEventListener('click', toggleMusic);
+
+        // All possible interaction events for autoplay
+        const interactionEvents = [
+            'click',
+            'touchstart',
+            'mousemove',
+            'scroll',
+            'keydown'
+        ];
+
+        // Handler for first interaction
+        function onFirstInteraction(e) {
+            if (hasMusicInteracted) return;
+            if (e.target.id === 'musicToggle') return; // Let button handle itself
+
+            startMusic();
+            removeInteractionListeners();
+        }
+
+        // Add interaction listeners
+        function addInteractionListeners() {
+            interactionEvents.forEach(event => {
+                document.addEventListener(event, onFirstInteraction, { passive: true });
+            });
+        }
+
+        // Remove interaction listeners
+        function removeInteractionListeners() {
+            interactionEvents.forEach(event => {
+                document.removeEventListener(event, onFirstInteraction);
+            });
+        }
+
+        // Try autoplay first
+        music.currentTime = startTime;
+        music.play().then(() => {
+            isMusicPlaying = true;
+            hasMusicInteracted = true;
+            updateMusicButton();
+            removeInteractionListeners();
+        }).catch(() => {
+            // Autoplay blocked - add listeners for first interaction
+            console.log('🎵 Waiting for interaction to play music...');
+            addInteractionListeners();
+        });
+
+        // Handle page visibility (pause when tab hidden)
+        document.addEventListener('visibilitychange', () => {
+            if (!hasMusicInteracted) return;
+
+            if (document.hidden && isMusicPlaying) {
+                music.pause();
+            } else if (!document.hidden && isMusicPlaying) {
+                music.play();
+            }
+        });
+
+        // When song loops, restart from 9 seconds
+        music.addEventListener('ended', () => {
+            music.currentTime = startTime;
+            music.play();
+        });
+
+        // Double-check loop reset (in case 'ended' doesn't fire with loop)
+        music.addEventListener('timeupdate', () => {
+            // If near the end, go back to start time
+            if (music.duration - music.currentTime < 0.5) {
+                music.currentTime = startTime;
+            }
+        });
+    </script>
+    <script>
+        // ========== CONFETTI SYSTEM (copied from celebration.html) ==========
+        const confettiCanvas = document.getElementById('confettiCanvas');
+        const confettiCtx = confettiCanvas.getContext('2d');
+
+        function resizeConfettiCanvas() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeConfettiCanvas);
+        resizeConfettiCanvas();
+
+        const confettiColors = ['#ff69b4', '#ff1493', '#a855f7', '#ffb6c1', '#ff85a2', '#ffd700', '#ffffff', '#ee82ee', '#da70d6'];
+        const confettiShapes = ['circle', 'square', 'heart', 'star'];
+        let confettiParticles = [];
+
+        class ConfettiParticle {
+            constructor(fromCenter = false) {
+                this.reset(fromCenter);
+            }
+
+            reset(fromCenter = false) {
+                if (fromCenter) {
+                    this.x = confettiCanvas.width / 2 + (Math.random() - 0.5) * 100;
+                    this.y = confettiCanvas.height / 2;
+                    this.speedY = Math.random() * 15 - 12;
+                    this.speedX = Math.random() * 20 - 10;
+                } else {
+                    this.x = Math.random() * confettiCanvas.width;
+                    this.y = Math.random() * -confettiCanvas.height;
+                    this.speedY = Math.random() * 0.5 + 0.2;
+                    this.speedX = Math.random() * 0.8 - 0.3;
+                }
+                this.size = Math.random() * 10 + 5;
+                this.color = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                this.shape = confettiShapes[Math.floor(Math.random() * confettiShapes.length)];
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 10 - 5;
+                this.wobble = Math.random() * 10;
+                this.wobbleSpeed = Math.random() * 0.1;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX + Math.sin(this.wobble) * 0.3;
+                this.rotation += this.rotationSpeed;
+                this.wobble += this.wobbleSpeed;
+                this.speedY += 0.005;
+
+                if (this.y > confettiCanvas.height + 50) {
+                    this.reset(false);
+                }
+            }
+
+            draw() {
+                confettiCtx.save();
+                confettiCtx.translate(this.x, this.y);
+                confettiCtx.rotate((this.rotation * Math.PI) / 180);
+                confettiCtx.fillStyle = this.color;
+
+                switch (this.shape) {
+                    case 'circle':
+                        confettiCtx.beginPath();
+                        confettiCtx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+                        confettiCtx.fill();
+                        break;
+                    case 'square':
+                        confettiCtx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+                        break;
+                    case 'heart':
+                        this.drawHeart();
+                        break;
+                    case 'star':
+                        this.drawStar();
+                        break;
+                }
+
+                confettiCtx.restore();
+            }
+
+            drawHeart() {
+                const size = this.size;
+                confettiCtx.beginPath();
+                confettiCtx.moveTo(0, size / 4);
+                confettiCtx.bezierCurveTo(size / 2, -size / 4, size / 2, -size / 2, 0, -size / 4);
+                confettiCtx.bezierCurveTo(-size / 2, -size / 2, -size / 2, -size / 4, 0, size / 4);
+                confettiCtx.fill();
+            }
+
+            drawStar() {
+                const spikes = 5;
+                const outerRadius = this.size / 2;
+                const innerRadius = this.size / 4;
+                confettiCtx.beginPath();
+                for (let i = 0; i < spikes * 2; i++) {
+                    const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                    const angle = (i * Math.PI) / spikes - Math.PI / 2;
+                    const x = Math.cos(angle) * radius;
+                    const y = Math.sin(angle) * radius;
+                    if (i === 0) confettiCtx.moveTo(x, y);
+                    else confettiCtx.lineTo(x, y);
+                }
+                confettiCtx.closePath();
+                confettiCtx.fill();
+            }
+        }
+
+        function createConfetti(count = 120) {
+            for (let i = 0; i < count; i++) {
+                const particle = new ConfettiParticle(false);
+                particle.y = Math.random() * confettiCanvas.height;
+                confettiParticles.push(particle);
+            }
+        }
+
+        function animateConfetti() {
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            confettiParticles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateConfetti);
+        }
+
+        function burstConfetti() {
+            for (let i = 0; i < 80; i++) {
+                confettiParticles.push(new ConfettiParticle(true));
+            }
+            playPopSound();
+            if (confettiParticles.length > 350) confettiParticles = confettiParticles.slice(-350);
+        }
+
+        function playPopSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.frequency.value = 600;
+                oscillator.type = 'sine';
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.15);
+            } catch (e) {}
+        }
+
+        // Start confetti on load
+        window.addEventListener('load', () => {
+            createConfetti(120);
+            animateConfetti();
+        });
+    </script>
+</body>
+</html>
