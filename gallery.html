@@ -528,72 +528,28 @@
         let currentImageIndex = 0;
         let currentGalleryType = 'gallery'; // Track which gallery is open
 
-        // Load gallery images from memories folder
-        async function loadGallery() {
-            try {
-                const response = await fetch('./memories/');
-                const html = await response.text();
-                
-                // Parse HTML to extract image files
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const links = doc.querySelectorAll('a');
-                
-                const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-                const images = [];
-                
-                links.forEach(link => {
-                    let href = link.getAttribute('href');
-                    if (href && !href.startsWith('?') && imageExtensions.some(ext => href.toLowerCase().endsWith(ext))) {
-                        // Extract just the filename
-                        const filename = href.split('/').pop();
-                        images.push({
-                            src: './memories/' + filename,
-                            caption: filename.replace(/\.[^.]+$/, '')
-                        });
-                    }
-                });
-                
-                galleryImages = images;
-                renderGallery();
-            } catch (error) {
-                console.log('Error loading main gallery.');
-                renderGallery();
-            }
+        // Load gallery images from memories folder - hardcoded filenames for GitHub Pages
+        function loadGallery() {
+            const imageFiles = ['1.jpeg', '2.png', '3.jpeg', '4.jpeg', '5.jpeg', '6.jpeg', '7.jpeg', '8.jpeg', '9.jpeg', '10.jpeg', '11.jpeg', '12.jpeg', '13.jpeg', '14.jpeg', '15.jpeg', '16.jpeg', '17.jpeg', '18.jpeg', '19.jpeg', '20.jpeg', '21.jpeg', '22.jpeg'];
+            
+            galleryImages = imageFiles.map(filename => ({
+                src: './memories/' + filename,
+                caption: filename.replace(/\.[^.]+$/, '')
+            }));
+            
+            renderGallery();
         }
 
-        // Load videos from memories/videos folder
-        async function loadVideos() {
-            try {
-                const response = await fetch('./memories/videos/');
-                const html = await response.text();
-                
-                // Parse HTML to extract video files
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const links = doc.querySelectorAll('a');
-                
-                const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv', '.flv', '.wmv'];
-                const videos = [];
-                
-                links.forEach(link => {
-                    let href = link.getAttribute('href');
-                    if (href && !href.startsWith('?') && videoExtensions.some(ext => href.toLowerCase().endsWith(ext))) {
-                        // Extract just the filename
-                        const filename = href.split('/').pop();
-                        videos.push({
-                            src: './memories/videos/' + filename,
-                            caption: filename.replace(/\.[^.]+$/, '')
-                        });
-                    }
-                });
-                
-                videosImages = videos;
-                renderVideos();
-            } catch (error) {
-                console.log('Error loading videos folder.');
-                renderVideos();
-            }
+        // Load videos from memories/videos folder - hardcoded filenames for GitHub Pages
+        function loadVideos() {
+            const videoFiles = ['1.mp4', '2.mp4', '3.mp4', '4.mp4', '5.mp4', '6.mp4', '7.mp4', '8.mp4', '10.mp4', '11.mp4', '12.mp4', '13.mp4'];
+            
+            videosImages = videoFiles.map(filename => ({
+                src: './memories/videos/' + filename,
+                caption: filename.replace(/\.[^.]+$/, '')
+            }));
+            
+            renderVideos();
         }
 
         function renderGallery() {
